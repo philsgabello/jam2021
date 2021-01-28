@@ -1,0 +1,16 @@
+hospital
+castle
+factory
+house - home
+garden - park
+subway - metro
+pirate ship
+stadium
+shop
+kitchen
+dumpster
+ufo
+graveyard
+prison
+oasi
+space

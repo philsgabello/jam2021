@@ -1,0 +1,15 @@
+Destination: Happy Place (Sponsored by Unity) - Make a game that includes the journey or process (a location, an activity, an idea, people, and so on) to get to a place or state of mind that makes you happy.
+
+Spinal Tap - The game has separate volume sliders for different types of sound effects  (e.g. footsteps, gunshots, ambience, engine, tyres)
+
+Get to the point - Your in-game artwork should be in a Pointillist style.
+
+Vocalise - Every element (UI + gameplay) in your game is voiced by synthesized speech or a narrator.
+
+Moving the goalposts - The win condition of the game changes in some way each time it is played
+
+How many of you are in there? - Make a game where the character is controlled by multiple players.
+
+Games are for Everyone - Give traditionally underrepresented group(s) a voice in your game through characters, narrative or design.  
+
+Starlight - Your game world is inspired by stars and constellations.
