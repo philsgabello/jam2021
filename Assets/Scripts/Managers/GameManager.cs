@@ -1,13 +1,38 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
 
+    public enum GameState
+    {
+        Idle, WaitFirstInput, Gameplay, GameOver, Complete
+    }
+
+    public enum Difficulty
+    {
+        Easy, Medium, Hard
+    }
+
+    public GameState State
+    {
+        get { return gameState; }
+
+    }
+
+    private GameState gameState = GameState.Idle;
+
+    public Text debugText;
+
     public static GameManager instance;
 
     FileHandler fileHandler;
+
+    string currentCatName;
+    string currentLocationName;
 
     // Start is called before the first frame update
     void Start()
@@ -23,15 +48,64 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        switch (gameState)
+        {
+            case GameState.Idle:
+                break;
+
+            case GameState.WaitFirstInput:
+                if (CheckAnagram(InputManager.instance.CurrentInput, currentCatName))
+                {
+                    //The game starts
+                    //TODO: GFX
+                    SetGameState(GameState.Gameplay);
+                }
+                break;
+
+            case GameState.Gameplay:
+                break;
+
+            case GameState.Complete:
+                break;
+
+            case GameState.GameOver:
+                break;
+
+            default:
+                break;
+        }
     }
 
     public void BeginNewGameInstance()
     {
-        //TODO: SELECT NAME WORD
-        //TODO: SELECT LOCATION
-        //TODO: CALL DISPLAY NAME
-        //TODO: ENABLE USER INPUT
+        currentCatName = SelectNewName();
+        currentLocationName = SelectNewLocation();
+
+        debugText.text = currentCatName;
+        SetGameState(GameState.WaitFirstInput);
+    }
+
+    private void SetGameState(GameState newGameState)
+    {
+        gameState = newGameState;
+    }
+
+    private string SelectNewName(Difficulty difficulty = Difficulty.Easy)
+    {
+        List<string> temp = fileHandler.GetListOfNames();
+
+        string candidate = temp[UnityEngine.Random.Range(0, temp.Count - 1)];
+
+        return candidate;
+    }
+
+    private string SelectNewLocation(Difficulty difficulty = Difficulty.Easy)
+    {
+        List<string> temp = fileHandler.GetListOfLocations();
+
+        string candidate = temp[UnityEngine.Random.Range(0, temp.Count - 1)];
+
+        return candidate;
     }
 
     public void Advance()
@@ -52,5 +126,28 @@ public class GameManager : MonoBehaviour
         //Reload state
     }
 
+    private bool CheckAnagram(string A, string B)
+    {
+        int a = A.Length;
+        int b = B.Length;
+
+        if(a != b)
+        {
+            return false;
+        }
+
+        char[] arrayA = A.ToCharArray();
+        char[] arrayB = B.ToCharArray();
+
+        Array.Sort(arrayA);
+        Array.Sort(arrayB);
+
+        A = arrayA.ToString();
+        B = arrayB.ToString();
+
+        return A == B;
+
+
+    }
 
 }
