@@ -180,26 +180,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d34371d6c7f112142a78b9ad51b3553a, type: 3}
---- !u!1 &1345835990 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4730100055511914446, guid: d34371d6c7f112142a78b9ad51b3553a, type: 3}
-  m_PrefabInstance: {fileID: 1345835989}
-  m_PrefabAsset: {fileID: 0}
---- !u!111 &1345835991
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1345835990}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Animation: {fileID: 7400000, guid: da2e0e136eefc494993871d19012107b, type: 2}
-  m_Animations: []
-  m_WrapMode: 0
-  m_PlayAutomatically: 1
-  m_AnimatePhysics: 0
-  m_CullingType: 0
 --- !u!1 &1380050564
 GameObject:
   m_ObjectHideFlags: 0
