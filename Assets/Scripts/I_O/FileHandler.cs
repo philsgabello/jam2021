@@ -9,9 +9,6 @@ public class FileHandler
     string namesFilePath = "Assets/Resources/names.txt";
     string locationsFilePath = "Assets/Resources/loactions.txt";
 
-    string LetterImagesPath = "Assets/Resources/Letters/";
-    Dictionary<char, string> letterPaths = new Dictionary<char, string>();
-
     public List<string> GetListOfNames()
     {
         if(names.Count != 0)
@@ -50,26 +47,6 @@ public class FileHandler
         locations = tempList;
 
         return locations;
-    }
-
-    public Dictionary<char, string> GetListOfLetterPaths()
-    {
-        if(letterPaths.Count == 26)
-        {
-            return letterPaths;
-        }
-
-        char firstChar = (char)65;
-
-        for(int i = 0; i < 26; i++)
-        {
-            char tempCurrentChar = (char)((int)firstChar + 1);
-            string tempPath = LetterImagesPath + tempCurrentChar + ".png";
-            letterPaths.Add(tempCurrentChar, tempPath);
-        }
-
-        return letterPaths;
-        
     }
 
 
