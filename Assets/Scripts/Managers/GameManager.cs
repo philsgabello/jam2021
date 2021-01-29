@@ -150,4 +150,11 @@ public class GameManager : MonoBehaviour
 
     }
 
+    public Sprite GetLetterSprite(char letter)
+    {
+        string path = fileHandler.GetListOfLetterPaths()[letter];
+        Sprite sprite = Resources.Load(path) as Sprite;
+        return sprite;
+    }
+
 }
