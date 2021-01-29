@@ -27,6 +27,7 @@ public class InputManager : MonoBehaviour
         {
             instance = this;
         }
+        
     }
 
     // Update is called once per frame

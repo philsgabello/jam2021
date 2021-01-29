@@ -1,0 +1,12 @@
+animazione		clip
+
+set card		card placed on a table
+show card		card flip
+draw card		draw card
+idle			
+remove card		picking up
+removed card show	card flip
+shuffle card		riffling
+
+error			american buzz
+win			jingle win	oppure		winsquare
