@@ -1,12 +1,10 @@
 animazione		clip
 
+draw card		card flip
+idle			mystic bells
 set card		card placed on a table
-show card		card flip
-draw card		draw card
-idle			
-remove card		picking up
-removed card show	card flip
 shuffle card		riffling
-
+remove card		card flip
 error			american buzz
-win			jingle win	oppure		winsquare
+win			winsquare
+game over		game over
