@@ -45,6 +45,8 @@ public class GameManager : MonoBehaviour
     GameplayState gameplayPhase = GameplayState.Idle;
     bool shouldRemove = true;
 
+    int thisAnalyzedPosition;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -102,31 +104,40 @@ public class GameManager : MonoBehaviour
             case GameplayState.Idle:
                 if (shouldRemove)
                 {
-                    shouldRemove = false;
                     gameplayPhase = GameplayState.Remove;
                 }
                 else
                 {
-                    shouldRemove = true;
                     gameplayPhase = GameplayState.Add;
                 }
                 break;
             case GameplayState.Remove:
-                gameplayPhase = GameplayState.WaitingPlayerRelease;
-                StartCoroutine(PickWrongCard(1f));
+                if (shouldRemove)
+                {
+                    shouldRemove = false;
+                    StartCoroutine(PickWrongCard(1f));
+                }
                 break;
             case GameplayState.WaitingPlayerRelease:
                 if (CheckContained(ExtractWord(currentGameplayString), InputManager.instance.CurrentInput))
                 {
-                    Debug.Log("Correct");
-                    //The game starts
-                    //TODO: GFX
-                    gameplayPhase = GameplayState.Add;
+                    EventManager.instance.SetCharacterAnimation("shuffleCard");
+                    gameplayPhase = GameplayState.Idle;
                 }
                 break;
             case GameplayState.Add:
+                if (!shouldRemove)
+                {
+                    shouldRemove = true;
+                    StartCoroutine(DrawCard(1f));
+                }
                 break;
             case GameplayState.WaitingPlayerPress:
+                if (CheckContained(ExtractWord(currentGameplayString), InputManager.instance.CurrentInput))
+                {
+                    EventManager.instance.SetCharacterAnimation("setCard");
+                    gameplayPhase = GameplayState.Idle;
+                }
                 break;
         } 
     }
@@ -273,6 +284,8 @@ public class GameManager : MonoBehaviour
 
         } while (guess == currentLocationName[analyzedPosition]);
 
+        thisAnalyzedPosition = analyzedPosition;
+
         Debug.Log(guess);
         if (guess == ' ')
         {
@@ -288,6 +301,24 @@ public class GameManager : MonoBehaviour
         }
         
         
+    }
+
+    IEnumerator DrawCard(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        DrawCard_Internal();
+    }
+
+    void DrawCard_Internal()
+    {
+
+        char substitute = currentLocationName[thisAnalyzedPosition];
+
+        currentGameplayString = currentGameplayString.Remove(thisAnalyzedPosition, 1).Insert(thisAnalyzedPosition, substitute.ToString());
+        MainCharacter.instance.BookCardForSlot(thisAnalyzedPosition, substitute);
+        EventManager.instance.SetCharacterAnimation("drawCard");
+        gameplayPhase = GameplayState.WaitingPlayerPress;
+
     }
 
     string ExtractWord(string s)

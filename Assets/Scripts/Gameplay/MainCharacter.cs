@@ -73,6 +73,7 @@ public class MainCharacter : MonoBehaviour
             return;
         }
         table.BookSlot(i, card);
+        cardOnHand.Setup(c);
     }
 
     public void ReleaseSlot(int i, char c)

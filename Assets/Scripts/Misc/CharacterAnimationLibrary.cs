@@ -34,4 +34,8 @@ public class CharacterAnimationLibrary : MonoBehaviour
     {
         MainCharacter.instance.SetCardOnHandVisible(true);
     }
+    public void SetCardOnHandInvisible()
+    {
+        MainCharacter.instance.SetCardOnHandVisible(false);
+    }
 }
