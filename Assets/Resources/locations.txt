@@ -1,12 +1,6 @@
-5 location essenziali
-subway
 castle
 factory
-home
 space
-5 aggiuntivi
-pirateship
-stadium
-garden
+ship
 hospital
-dumpster
+prison
