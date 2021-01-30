@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class GameManager : MonoBehaviour
 {
@@ -10,6 +11,11 @@ public class GameManager : MonoBehaviour
     public enum GameState
     {
         Idle, WaitFirstInput, Gameplay, GameOver, Complete
+    }
+
+    public enum GameplayState
+    {
+        Idle, Remove, WaitingPlayerRelease, Add, WaitingPlayerPress
     }
 
     public enum Difficulty
@@ -34,27 +40,37 @@ public class GameManager : MonoBehaviour
     string currentCatName;
     string currentLocationName;
 
+    string currentGameplayString;
+
+    GameplayState gameplayPhase = GameplayState.Idle;
+    bool shouldRemove = true;
+
     // Start is called before the first frame update
     void Start()
     {
+        
         if(instance == null)
         {
             instance = this;
         }
 
         fileHandler = new FileHandler();
+
+        StartCoroutine(StartGamestate(1f));
     }
 
     // Update is called once per frame
     void Update()
     {
+
+
         switch (gameState)
         {
             case GameState.Idle:
                 break;
 
             case GameState.WaitFirstInput:
-                if (CheckAnagram(InputManager.instance.CurrentInput, currentCatName))
+                if (CheckContained(ExtractWord(currentGameplayString), InputManager.instance.CurrentInput))
                 {
                     //The game starts
                     //TODO: GFX
@@ -63,6 +79,7 @@ public class GameManager : MonoBehaviour
                 break;
 
             case GameState.Gameplay:
+                ProcessGameplay();
                 break;
 
             case GameState.Complete:
@@ -76,13 +93,63 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    void ProcessGameplay()
+    {
+
+        Debug.Log("Process Gameplay with State = " + gameplayPhase);
+        switch (gameplayPhase)
+        {
+            case GameplayState.Idle:
+                if (shouldRemove)
+                {
+                    shouldRemove = false;
+                    gameplayPhase = GameplayState.Remove;
+                }
+                else
+                {
+                    shouldRemove = true;
+                    gameplayPhase = GameplayState.Add;
+                }
+                break;
+            case GameplayState.Remove:
+                gameplayPhase = GameplayState.WaitingPlayerRelease;
+                StartCoroutine(PickWrongCard(1f));
+                break;
+            case GameplayState.WaitingPlayerRelease:
+                if (CheckContained(ExtractWord(currentGameplayString), InputManager.instance.CurrentInput))
+                {
+                    Debug.Log("Correct");
+                    //The game starts
+                    //TODO: GFX
+                    gameplayPhase = GameplayState.Add;
+                }
+                break;
+            case GameplayState.Add:
+                break;
+            case GameplayState.WaitingPlayerPress:
+                break;
+        } 
+    }
+
     public void BeginNewGameInstance()
     {
-        currentCatName = SelectNewName();
-        currentLocationName = SelectNewLocation();
 
-        debugText.text = currentCatName;
+        currentCatName = SelectNewName().ToUpper();
+        currentLocationName = SelectNewLocation().ToUpper();
+
+        currentGameplayString = currentCatName;
+        for(int i = currentGameplayString.Length; i < 10; i++)
+        {
+            currentGameplayString = currentGameplayString + " ";
+        }
+
+        EventManager.instance.SetCharacterAnimation("drawCard");
+        EventManager.instance.SetCharacterAnimation("setCard");
+
+        MainCharacter.instance.NewWordBooking(ExtractWord(currentGameplayString));
+
         SetGameState(GameState.WaitFirstInput);
+
     }
 
     private void SetGameState(GameState newGameState)
@@ -108,14 +175,7 @@ public class GameManager : MonoBehaviour
         return candidate;
     }
 
-    public void Advance()
-    {
-        //Check if finished and correct
-            //END GAME INSTANCE
 
-        //next letter
-        //Update Input and gfx
-    }
 
     public void Regress()
     {
@@ -124,6 +184,29 @@ public class GameManager : MonoBehaviour
 
         //retry
         //Reload state
+    }
+
+    private bool CheckContained(string A, string B)
+    {
+
+        foreach(char c in A.ToCharArray())
+        {
+            if (!B.Contains(c.ToString()))
+            {
+                return false;
+            }
+
+        }
+
+        foreach (char c in B.ToCharArray())
+        {
+            if (!A.Contains(c.ToString()))
+            {
+                return false;
+            }
+
+        }
+        return true;
     }
 
     private bool CheckAnagram(string A, string B)
@@ -157,4 +240,58 @@ public class GameManager : MonoBehaviour
         return sprite;
     }
 
+
+    IEnumerator StartGamestate(float delay)
+    {
+
+        yield return new WaitForSeconds(delay);
+
+        BeginNewGameInstance();
+    }
+
+    IEnumerator PickWrongCard(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        PickWrongCard_Internal();
+    }
+
+    void PickWrongCard_Internal()
+    {
+        if(currentGameplayString == ExtractWord(currentGameplayString))
+        {
+            Debug.Log("Finito");
+            return;
+        }
+
+        char guess;
+        int analyzedPosition;
+
+        do
+        {
+            analyzedPosition = UnityEngine.Random.Range(0, currentLocationName.Length - 1);
+            guess = currentGameplayString[analyzedPosition];
+
+        } while (guess == currentLocationName[analyzedPosition]);
+
+        Debug.Log(guess);
+        if (guess == ' ')
+        {
+            gameplayPhase = GameplayState.Add;
+        }
+        else
+        {
+            currentGameplayString = currentGameplayString.Remove(analyzedPosition, 1).Insert(analyzedPosition, " ");
+            Debug.Log(currentGameplayString);
+            MainCharacter.instance.ReleaseSlot(analyzedPosition, guess);
+            EventManager.instance.SetCharacterAnimation("takeCard");
+            gameplayPhase = GameplayState.WaitingPlayerRelease;
+        }
+        
+        
+    }
+
+    string ExtractWord(string s)
+    {
+        return s.Replace(" ", "");
+    }
 }

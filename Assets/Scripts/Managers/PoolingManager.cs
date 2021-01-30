@@ -48,4 +48,22 @@ public class PoolingManager : MonoBehaviour
     {
         
     }
+
+    public Card GetAvailableCard()
+    {
+        foreach(Card c in cardsPool)
+        {
+            if (c.isAvailable)
+            {
+                c.BookCard();
+                return c;
+            }
+        }
+
+        GameObject newObject = GameObject.Instantiate(cardPrefab);
+        cardsPool.Add(newObject.GetComponentInChildren<Card>());
+
+        return newObject.GetComponent<Card>();
+
+    }
 }

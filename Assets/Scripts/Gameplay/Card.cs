@@ -8,6 +8,8 @@ public class Card : MonoBehaviour
 
     Transform assignedSlot;
 
+    public bool isAvailable = true;
+
     //PLACEHOLDER
     public TextMesh textMesh;
 
@@ -53,11 +55,25 @@ public class Card : MonoBehaviour
         assignedSlot = t;
         this.transform.SetParent(assignedSlot);
         this.transform.localPosition = Vector3.zero;
+        isAvailable = false;
 
     }
 
     public void ClearSlot()
     {
         AssignSlot(PoolingManager.instance.CardSocket);
+        isAvailable = true;
+        
+    }
+
+    public void BookCard()
+    {
+        isAvailable = false;
+    }
+
+    public void SetVisibility(bool b)
+    {
+        textMesh.GetComponent<MeshRenderer>().enabled = b;
+        letterSR.enabled = b;
     }
 }

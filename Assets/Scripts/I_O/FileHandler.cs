@@ -7,7 +7,7 @@ public class FileHandler
     List<string> locations = new List<string>();
 
     string namesFilePath = "Assets/Resources/names.txt";
-    string locationsFilePath = "Assets/Resources/loactions.txt";
+    string locationsFilePath = "Assets/Resources/locations.txt";
 
     string LetterImagesPath = "Assets/Resources/Letters/";
     Dictionary<char, string> letterPaths = new Dictionary<char, string>();
@@ -23,7 +23,15 @@ public class FileHandler
         string fullText = reader.ReadToEnd();
 
         List<string> tempList = new List<string>();
-        tempList.AddRange(fullText.Split(new char[] { '\n' }, System.StringSplitOptions.RemoveEmptyEntries));
+        tempList.AddRange(fullText.Split('\n'));
+
+
+        for(int i = 0; i < tempList.Count; i++)
+        {
+            tempList[i] = tempList[i].Remove(tempList[i].Length - 1);
+        }
+
+
 
         //Controlling the list
 

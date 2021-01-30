@@ -1,10 +1,10 @@
 hospital
 castle
 factory
-house - home
-garden - park
-subway - metro
-pirate ship
+home
+garden
+subway
+pirateship
 stadium
 shop
 kitchen

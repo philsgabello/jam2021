@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   letterSR: {fileID: 6406298636228307617}
+  isAvailable: 1
   textMesh: {fileID: 6406298635621135292}
 --- !u!1 &6406298635621135282
 GameObject:
