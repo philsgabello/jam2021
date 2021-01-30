@@ -1,0 +1,6 @@
+1 disegno del gatto intero
+1 disegno solo della testa del gatto
+
+1 texture composta da 1 colore primario e 1 colore secondario
+5 colori primari
+5 colori secondari
