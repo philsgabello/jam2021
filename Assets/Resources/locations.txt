@@ -1,6 +1,6 @@
 castle
 factory
 space
-ship
+bank
 hospital
 prison
