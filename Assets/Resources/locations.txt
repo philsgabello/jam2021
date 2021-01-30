@@ -1,16 +1,12 @@
-hospital
+5 location essenziali
+subway
 castle
 factory
 home
-garden
-subway
+space
+5 aggiuntivi
 pirateship
 stadium
-shop
-kitchen
+garden
+hospital
 dumpster
-ufo
-graveyard
-prison
-oasi
-space
