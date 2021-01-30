@@ -6,6 +6,7 @@ public class MainCharacter : MonoBehaviour
 {
 
     AudioSource audioSource;
+    public Table table;
 
     // Start is called before the first frame update
     void Start()
