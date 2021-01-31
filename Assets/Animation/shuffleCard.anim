@@ -21,13 +21,13 @@ AnimationClip:
   - curve:
     - time: 0
       value: {fileID: 21300000, guid: 3cb410f0918ef034c854fd857ae1d04d, type: 3}
-    - time: 0.25
+    - time: 0.16666667
       value: {fileID: 21300000, guid: 563e54336b4c43341a45ce00e6488b31, type: 3}
-    - time: 0.5
+    - time: 0.25
       value: {fileID: 21300000, guid: aef5ced1a42294841bfa684e6eb9474f, type: 3}
-    - time: 0.8333333
+    - time: 0.6666667
       value: {fileID: 21300000, guid: d49594cf7c5f3fa4c9dae0f357e18a47, type: 3}
-    - time: 1.0833334
+    - time: 0.8333333
       value: {fileID: 21300000, guid: 44b7de8d39cd8b24bbc6f5518721505a, type: 3}
     attribute: m_Sprite
     path: 
@@ -58,7 +58,7 @@ AnimationClip:
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 1.1666667
+    m_StopTime: 0.9166666
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
@@ -78,7 +78,7 @@ AnimationClip:
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
   m_Events:
-  - time: 0.5
+  - time: 0.25
     functionName: SetCardOnHandInvisible
     data: 
     objectReferenceParameter: {fileID: 0}
