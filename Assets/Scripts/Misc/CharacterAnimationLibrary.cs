@@ -21,6 +21,7 @@ public class CharacterAnimationLibrary : MonoBehaviour
 
     public void PlaySound(AudioClip clip)
     {
+        currentSoundToRandomize = clip;
         MainCharacter.instance.PlaySound(clip);
 
     }

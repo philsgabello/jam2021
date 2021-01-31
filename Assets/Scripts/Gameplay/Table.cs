@@ -68,8 +68,11 @@ public class Table : MonoBehaviour
     {
         foreach (int i in cardsToRemove)
         {
+            if(slotsDictionary[GetSocket(i)] != null)
+            {
+                slotsDictionary[GetSocket(i)].ClearSlot();
+            }
             
-            slotsDictionary[GetSocket(i)].ClearSlot();
             slotsDictionary[GetSocket(i)] = null;
         }
         cardsToRemove.Clear();

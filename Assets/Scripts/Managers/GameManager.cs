@@ -29,11 +29,11 @@ public class GameManager : MonoBehaviour
 
     }
 
+    bool firstTime = true;
+
     private int lives = 3;
 
     private GameState gameState = GameState.Idle;
-
-    public Text debugText;
 
     public static GameManager instance;
 
@@ -49,6 +49,8 @@ public class GameManager : MonoBehaviour
     bool shouldRemove = true;
 
     int thisAnalyzedPosition;
+
+    public Animator masterAnim;
 
     // Start is called before the first frame update
     void Start()
@@ -105,6 +107,7 @@ public class GameManager : MonoBehaviour
                 Debug.LogWarning("GAME OVER");
                 EventManager.instance.SetCharacterAnimation("gameOver");
                 SetGameState(GameState.Idle);
+                StartCoroutine(StartGamestate(4f));
                 break;
 
             default:
@@ -143,10 +146,7 @@ public class GameManager : MonoBehaviour
                 {
                     if(lives != 0)
                     {
-                        lives--;
-                        Debug.LogWarning("Remaining Lives: " + lives);
-                        SetGameState(GameState.WaitForCorrection);
-                        EventManager.instance.SetCharacterAnimation("error");
+                        RemoveLife();
                     }
                     else
                     {
@@ -176,10 +176,7 @@ public class GameManager : MonoBehaviour
                 {
                     if (lives != 0)
                     {
-                        lives--;
-                        Debug.LogWarning("Remaining Lives: " + lives);
-                        SetGameState(GameState.WaitForCorrection);
-                        EventManager.instance.SetCharacterAnimation("error");
+                        RemoveLife();
                     }
                     else
                     {
@@ -195,10 +192,31 @@ public class GameManager : MonoBehaviour
         } 
     }
 
+    private void RemoveLife()
+    {
+        lives--;
+        Debug.LogWarning("Remaining Lives: " + lives);
+        SetGameState(GameState.WaitForCorrection);
+        EventManager.instance.SetCharacterAnimation("error");
+        LifeBar.instance.RemoveLife();
+    }
+
     public void BeginNewGameInstance()
     {
         lives = 3;
+        LifeBar.instance.Reset();
+
+        if (firstTime)
+        {
+            firstTime = false;
+        }
+        else
+        {
+            EventManager.instance.SetCharacterAnimation("reset");
+        }
+
         currentCatName = SelectNewName().ToUpper();
+
         string tempLocation;
         do
         {
