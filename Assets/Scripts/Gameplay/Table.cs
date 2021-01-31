@@ -8,7 +8,8 @@ public class Table : MonoBehaviour
     public Transform[] cardSockets;
     Dictionary<Transform, Card> slotsDictionary = new Dictionary<Transform, Card>();
 
-    List<int> slotsToRemove = new List<int>();
+
+    List<int> cardsToRemove = new List<int>();
 
 
     void Start()
@@ -23,7 +24,14 @@ public class Table : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        string debug = "";
+        int i = 0;
+        foreach(Card c in slotsDictionary.Values)
+        {
+            debug = debug + "(" + i + ") " +  (c == null) + " - ";
+            i++;
+        }
+        //Debug.Log(debug);
     }
 
     public Transform GetSocket(int i)
@@ -33,7 +41,8 @@ public class Table : MonoBehaviour
 
     public bool IsSlotAvailable(int i)
     {
-        return slotsDictionary[GetSocket(i)] == null;
+
+        return ((slotsDictionary[GetSocket(i)] == null) && (!cardsToRemove.Contains(i)));
     }
 
     public bool BookSlot(int i, Card newCard, bool forceRelease = false)
@@ -42,37 +51,28 @@ public class Table : MonoBehaviour
         {
 
             return false;
-            //if (forceRelease)
-            //{
-            //    AppendSlotRemoval(i);
-            //}
-            //else
-            //{
-            //    return false;
-            //}
         }
 
         slotsDictionary[GetSocket(i)] = newCard;
-        //newCard.AssignSlot(cardSockets[i]);
 
         return true;
     }
 
     public void AppendSlotRemoval(int i)
     {
-        slotsToRemove.Add(i);
+        cardsToRemove.Add(i);
+        
     }
 
     public void ReleaseSlots()
     {
-        foreach(int i in slotsToRemove)
+        foreach (int i in cardsToRemove)
         {
-            if (slotsDictionary[GetSocket(i)] != null)
-            {
-                slotsDictionary[GetSocket(i)].ClearSlot();
-                slotsDictionary[GetSocket(i)] = null;
-            }
+            
+            slotsDictionary[GetSocket(i)].ClearSlot();
+            slotsDictionary[GetSocket(i)] = null;
         }
+        cardsToRemove.Clear();
 
         
     }

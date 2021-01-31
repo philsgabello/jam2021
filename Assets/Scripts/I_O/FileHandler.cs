@@ -31,10 +31,6 @@ public class FileHandler
             tempList[i] = tempList[i].Remove(tempList[i].Length - 1);
         }
 
-
-
-        //Controlling the list
-
         names = tempList;
 
         return names;
@@ -53,7 +49,11 @@ public class FileHandler
         List<string> tempList = new List<string>();
         tempList.AddRange(fullText.Split(new char[] { '\n' }, System.StringSplitOptions.RemoveEmptyEntries));
 
-        //Controlling the list
+        for (int i = 0; i < tempList.Count; i++)
+        {
+            tempList[i] = tempList[i].Remove(tempList[i].Length - 1);
+        }
+
 
         locations = tempList;
 

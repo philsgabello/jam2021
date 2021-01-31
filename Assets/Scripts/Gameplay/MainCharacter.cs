@@ -15,6 +15,8 @@ public class MainCharacter : MonoBehaviour
 
     public Transform handSocket;
 
+    GameManager.GameplayState nextState;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -73,13 +75,14 @@ public class MainCharacter : MonoBehaviour
             return;
         }
         table.BookSlot(i, card);
+        
         cardOnHand.Setup(c);
     }
 
     public void ReleaseSlot(int i, char c)
     {
         table.AppendSlotRemoval(i);
-        cardOnHand.Setup(c);
+        cardOnHand.Setup(c); 
         
     }
 
@@ -92,5 +95,14 @@ public class MainCharacter : MonoBehaviour
     public void SetCardOnHandVisible(bool isVisible)
     {
         cardOnHand.SetVisibility(isVisible);
+    }
+
+    public void RegisterNewGameplayState(GameManager.GameplayState state)
+    {
+        nextState = state;
+    }
+    public void ApplyState()
+    {
+        GameManager.instance.SetGameplayPhase(nextState);
     }
 }

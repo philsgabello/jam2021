@@ -1,6 +1,6 @@
 castle
 factory
-space
-bank
+inspace
+thebank
 hospital
 prison

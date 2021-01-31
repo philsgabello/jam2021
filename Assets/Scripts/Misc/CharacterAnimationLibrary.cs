@@ -38,4 +38,9 @@ public class CharacterAnimationLibrary : MonoBehaviour
     {
         MainCharacter.instance.SetCardOnHandVisible(false);
     }
+
+    public void ApplyGameplayState()
+    {
+        MainCharacter.instance.ApplyState();
+    }
 }

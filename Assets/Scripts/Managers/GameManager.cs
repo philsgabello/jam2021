@@ -97,17 +97,18 @@ public class GameManager : MonoBehaviour
 
     void ProcessGameplay()
     {
-
-        Debug.Log("Process Gameplay with State = " + gameplayPhase);
+        //Debug.Log(gameplayPhase);
         switch (gameplayPhase)
         {
             case GameplayState.Idle:
                 if (shouldRemove)
                 {
+                    Debug.LogWarning("Gameplay: " + "Pass To Remove");
                     gameplayPhase = GameplayState.Remove;
                 }
                 else
                 {
+                    Debug.LogWarning("Gameplay: " + "Pass To Add");
                     gameplayPhase = GameplayState.Add;
                 }
                 break;
@@ -121,8 +122,10 @@ public class GameManager : MonoBehaviour
             case GameplayState.WaitingPlayerRelease:
                 if (CheckContained(ExtractWord(currentGameplayString), InputManager.instance.CurrentInput))
                 {
-                    EventManager.instance.SetCharacterAnimation("shuffleCard");
                     gameplayPhase = GameplayState.Idle;
+
+                    //EventManager.instance.SetCharacterAnimation("shuffleCard");
+                    //MainCharacter.instance.RegisterNewGameplayState(GameplayState.Idle);
                 }
                 break;
             case GameplayState.Add:
@@ -135,8 +138,9 @@ public class GameManager : MonoBehaviour
             case GameplayState.WaitingPlayerPress:
                 if (CheckContained(ExtractWord(currentGameplayString), InputManager.instance.CurrentInput))
                 {
-                    EventManager.instance.SetCharacterAnimation("setCard");
                     gameplayPhase = GameplayState.Idle;
+                    //EventManager.instance.SetCharacterAnimation("setCard");
+                    //MainCharacter.instance.RegisterNewGameplayState(GameplayState.Idle);
                 }
                 break;
         } 
@@ -146,7 +150,15 @@ public class GameManager : MonoBehaviour
     {
 
         currentCatName = SelectNewName().ToUpper();
-        currentLocationName = SelectNewLocation().ToUpper();
+        string tempLocation;
+        do
+        {
+            tempLocation = SelectNewLocation();
+        } while(tempLocation.Length < currentCatName.Length);
+
+        currentLocationName = tempLocation.ToUpper();
+
+        Debug.LogWarning(currentCatName + "(" + currentCatName.Length + ")" + " -VS- " + currentLocationName + "(" + currentLocationName.Length + ")");
 
         currentGameplayString = currentCatName;
         for(int i = currentGameplayString.Length; i < 10; i++)
@@ -268,9 +280,10 @@ public class GameManager : MonoBehaviour
 
     void PickWrongCard_Internal()
     {
-        if(currentGameplayString == ExtractWord(currentGameplayString))
+        Debug.Log("strings are same? " + (currentLocationName == ExtractWord(currentGameplayString)));
+        if(currentLocationName == ExtractWord(currentGameplayString))
         {
-            Debug.Log("Finito");
+            SetGameState(GameState.Complete);
             return;
         }
 
@@ -279,25 +292,28 @@ public class GameManager : MonoBehaviour
 
         do
         {
-            analyzedPosition = UnityEngine.Random.Range(0, currentLocationName.Length - 1);
+            analyzedPosition = UnityEngine.Random.Range(0, currentLocationName.Length);
             guess = currentGameplayString[analyzedPosition];
 
         } while (guess == currentLocationName[analyzedPosition]);
 
         thisAnalyzedPosition = analyzedPosition;
 
-        Debug.Log(guess);
         if (guess == ' ')
         {
+            Debug.LogWarning("Gameplay: " + "No Previous Letter. Passing to ADD");
             gameplayPhase = GameplayState.Add;
         }
         else
         {
+            
             currentGameplayString = currentGameplayString.Remove(analyzedPosition, 1).Insert(analyzedPosition, " ");
-            Debug.Log(currentGameplayString);
-            MainCharacter.instance.ReleaseSlot(analyzedPosition, guess);
-            EventManager.instance.SetCharacterAnimation("takeCard");
             gameplayPhase = GameplayState.WaitingPlayerRelease;
+            Debug.LogWarning("Gameplay: " + "Removed " + guess + " - New string is _" + ExtractWord(currentGameplayString) + "_" );
+
+            //MainCharacter.instance.ReleaseSlot(analyzedPosition, guess);
+            //EventManager.instance.SetCharacterAnimation("takeCard");
+            //MainCharacter.instance.RegisterNewGameplayState(GameplayState.WaitingPlayerRelease);
         }
         
         
@@ -315,14 +331,22 @@ public class GameManager : MonoBehaviour
         char substitute = currentLocationName[thisAnalyzedPosition];
 
         currentGameplayString = currentGameplayString.Remove(thisAnalyzedPosition, 1).Insert(thisAnalyzedPosition, substitute.ToString());
-        MainCharacter.instance.BookCardForSlot(thisAnalyzedPosition, substitute);
-        EventManager.instance.SetCharacterAnimation("drawCard");
         gameplayPhase = GameplayState.WaitingPlayerPress;
+        Debug.LogWarning("Gameplay: " + "Added " + substitute + " - New string is _" + ExtractWord(currentGameplayString) + "_");
+
+        //MainCharacter.instance.BookCardForSlot(thisAnalyzedPosition, substitute);
+        //EventManager.instance.SetCharacterAnimation("drawCard");
+        //MainCharacter.instance.RegisterNewGameplayState(GameplayState.WaitingPlayerPress);
 
     }
 
     string ExtractWord(string s)
     {
         return s.Replace(" ", "");
+    }
+
+    public void SetGameplayPhase(GameplayState newPhase)
+    {
+        gameplayPhase = newPhase;
     }
 }
