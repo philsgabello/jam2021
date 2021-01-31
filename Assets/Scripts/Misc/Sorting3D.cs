@@ -11,7 +11,7 @@ public class Sorting3D : MonoBehaviour
     void Start()
     {
         MeshRenderer mRenderer = GetComponent<MeshRenderer>();
-        mRenderer.sortingLayerName = "Meshes";
+        
         mRenderer.sortingOrder = sortingLayer;
 
     }

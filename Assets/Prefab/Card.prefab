@@ -60,7 +60,7 @@ GameObject:
   - component: {fileID: 6406298635621135295}
   - component: {fileID: 6406298635621135292}
   - component: {fileID: 7174151078120745606}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Letter3D
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -156,7 +156,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccc157975ecbbfd47b0cfa90e36f566d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sortingLayer: 0
+  sortingLayer: 16
 --- !u!1 &6406298636228307623
 GameObject:
   m_ObjectHideFlags: 0

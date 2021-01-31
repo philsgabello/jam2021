@@ -52,6 +52,10 @@ public class GameManager : MonoBehaviour
 
     public Animator masterAnim;
 
+    public Overlay overlay;
+
+    public CatGenerator cat;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -97,17 +101,22 @@ public class GameManager : MonoBehaviour
                 break;
 
             case GameState.Complete:
+                MainCharacter.instance.ReleaseAllSlots();
+                MainCharacter.instance.SetCardOnHandVisible(false);
                 EventManager.instance.SetCharacterAnimation("win");
                 SetGameState(GameState.Idle);
+                StartCoroutine(WinState(4f));
+                StartCoroutine(StartNewGameFromWin(10f));
                 break;
 
             case GameState.GameOver:
+                overlay.isActive = false;
                 MainCharacter.instance.ReleaseAllSlots();
                 MainCharacter.instance.SetCardOnHandVisible(false);
                 Debug.LogWarning("GAME OVER");
                 EventManager.instance.SetCharacterAnimation("gameOver");
                 SetGameState(GameState.Idle);
-                StartCoroutine(StartGamestate(4f));
+                StartCoroutine(StartNewGameFromGameOver(4f));
                 break;
 
             default:
@@ -203,19 +212,12 @@ public class GameManager : MonoBehaviour
 
     public void BeginNewGameInstance()
     {
+        cat.GenerateNewCat();
         lives = 3;
         LifeBar.instance.Reset();
 
-        if (firstTime)
-        {
-            firstTime = false;
-        }
-        else
-        {
-            EventManager.instance.SetCharacterAnimation("reset");
-        }
-
         currentCatName = SelectNewName().ToUpper();
+        overlay.isActive = true;
 
         string tempLocation;
         do
@@ -423,5 +425,36 @@ public class GameManager : MonoBehaviour
     public void SetGameplayPhase(GameplayState newPhase)
     {
         gameplayPhase = newPhase;
+    }
+
+    IEnumerator WinState(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        WinState_Internal();
+    }
+
+    void WinState_Internal()
+    {
+        masterAnim.SetTrigger("exit");
+    }
+
+
+    IEnumerator StartNewGameFromGameOver(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        EventManager.instance.SetCharacterAnimation("reset");
+
+        BeginNewGameInstance();
+    }
+
+    IEnumerator StartNewGameFromWin(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        EventManager.instance.SetCharacterAnimation("reset");
+        masterAnim.SetTrigger("reset");
+
+        BeginNewGameInstance();
     }
 }
