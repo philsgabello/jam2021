@@ -122,10 +122,10 @@ public class GameManager : MonoBehaviour
             case GameplayState.WaitingPlayerRelease:
                 if (CheckContained(ExtractWord(currentGameplayString), InputManager.instance.CurrentInput))
                 {
-                    gameplayPhase = GameplayState.Idle;
+                    
 
-                    //EventManager.instance.SetCharacterAnimation("shuffleCard");
-                    //MainCharacter.instance.RegisterNewGameplayState(GameplayState.Idle);
+                    EventManager.instance.SetCharacterAnimation("shuffleCard");
+                    gameplayPhase = GameplayState.Idle;
                 }
                 break;
             case GameplayState.Add:
@@ -138,9 +138,8 @@ public class GameManager : MonoBehaviour
             case GameplayState.WaitingPlayerPress:
                 if (CheckContained(ExtractWord(currentGameplayString), InputManager.instance.CurrentInput))
                 {
+                    EventManager.instance.SetCharacterAnimation("setCard");
                     gameplayPhase = GameplayState.Idle;
-                    //EventManager.instance.SetCharacterAnimation("setCard");
-                    //MainCharacter.instance.RegisterNewGameplayState(GameplayState.Idle);
                 }
                 break;
         } 
@@ -308,12 +307,13 @@ public class GameManager : MonoBehaviour
         {
             
             currentGameplayString = currentGameplayString.Remove(analyzedPosition, 1).Insert(analyzedPosition, " ");
-            gameplayPhase = GameplayState.WaitingPlayerRelease;
+            
             Debug.LogWarning("Gameplay: " + "Removed " + guess + " - New string is _" + ExtractWord(currentGameplayString) + "_" );
 
-            //MainCharacter.instance.ReleaseSlot(analyzedPosition, guess);
-            //EventManager.instance.SetCharacterAnimation("takeCard");
-            //MainCharacter.instance.RegisterNewGameplayState(GameplayState.WaitingPlayerRelease);
+            MainCharacter.instance.ReleaseSlot(analyzedPosition);
+            MainCharacter.instance.SetupCardOnHand(guess);
+            EventManager.instance.SetCharacterAnimation("takeCard");
+            gameplayPhase = GameplayState.WaitingPlayerRelease;
         }
         
         
@@ -331,12 +331,13 @@ public class GameManager : MonoBehaviour
         char substitute = currentLocationName[thisAnalyzedPosition];
 
         currentGameplayString = currentGameplayString.Remove(thisAnalyzedPosition, 1).Insert(thisAnalyzedPosition, substitute.ToString());
-        gameplayPhase = GameplayState.WaitingPlayerPress;
+        
         Debug.LogWarning("Gameplay: " + "Added " + substitute + " - New string is _" + ExtractWord(currentGameplayString) + "_");
 
-        //MainCharacter.instance.BookCardForSlot(thisAnalyzedPosition, substitute);
-        //EventManager.instance.SetCharacterAnimation("drawCard");
-        //MainCharacter.instance.RegisterNewGameplayState(GameplayState.WaitingPlayerPress);
+        MainCharacter.instance.BookCardForSlot(thisAnalyzedPosition, substitute);
+        MainCharacter.instance.SetupCardOnHand(substitute);
+        EventManager.instance.SetCharacterAnimation("drawCard");
+        gameplayPhase = GameplayState.WaitingPlayerPress;
 
     }
 

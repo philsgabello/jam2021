@@ -76,14 +76,18 @@ public class MainCharacter : MonoBehaviour
         }
         table.BookSlot(i, card);
         
-        cardOnHand.Setup(c);
     }
 
-    public void ReleaseSlot(int i, char c)
+    public void ReleaseSlot(int i)
     {
         table.AppendSlotRemoval(i);
-        cardOnHand.Setup(c); 
         
+        
+    }
+
+    public void SetupCardOnHand(char c)
+    {
+        cardOnHand.Setup(c);
     }
 
     public void ApplyCardSlots()
