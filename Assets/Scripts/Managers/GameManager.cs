@@ -85,6 +85,8 @@ public class GameManager : MonoBehaviour
                 break;
 
             case GameState.Complete:
+                EventManager.instance.SetCharacterAnimation("win");
+                SetGameState(GameState.Idle);
                 break;
 
             case GameState.GameOver:
