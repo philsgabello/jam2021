@@ -56,6 +56,8 @@ public class GameManager : MonoBehaviour
 
     public CatGenerator cat;
 
+    public EndBackground endBkg;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -101,6 +103,7 @@ public class GameManager : MonoBehaviour
                 break;
 
             case GameState.Complete:
+                endBkg.SetBackground(GetLocationByInput(ExtractWord(currentGameplayString)));
                 MainCharacter.instance.ReleaseAllSlots();
                 MainCharacter.instance.SetCardOnHandVisible(false);
                 EventManager.instance.SetCharacterAnimation("win");
@@ -212,7 +215,8 @@ public class GameManager : MonoBehaviour
 
     public void BeginNewGameInstance()
     {
-        cat.GenerateNewCat();
+        shouldRemove = true;
+        Invoke("GenerateCat", 3f);
         lives = 3;
         LifeBar.instance.Reset();
 
@@ -465,5 +469,39 @@ public class GameManager : MonoBehaviour
         masterAnim.SetTrigger("reset");
 
         BeginNewGameInstance();
+    }
+
+    void GenerateCat()
+    {
+        cat.GenerateNewCat();
+    }
+
+    EndBackground.Location GetLocationByInput(string s)
+    {
+        if(s == "CASTLE")
+        {
+            return EndBackground.Location.Castle;
+        }
+        else if (s == "THEFACTORY")
+        {
+            return EndBackground.Location.Factory;
+        }
+        else if (s == "INSPACE")
+        {
+            return EndBackground.Location.Space;
+        }
+        else if (s == "THEBANK")
+        {
+            return EndBackground.Location.Bank;
+        }
+        else if (s == "HOSPITAL")
+        {
+            return EndBackground.Location.Hospital;
+        }
+        else if (s == "SUPERMAX")
+        {
+            return EndBackground.Location.Prison;
+        }
+        return EndBackground.Location.Space;
     }
 }
