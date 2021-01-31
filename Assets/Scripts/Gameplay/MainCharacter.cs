@@ -22,6 +22,7 @@ public class MainCharacter : MonoBehaviour
     {
         cardOnHand = PoolingManager.instance.GetAvailableCard();
         cardOnHand.SetVisibility(false);
+        
         cardOnHand.AssignSlot(handSocket);
 
 
@@ -40,7 +41,7 @@ public class MainCharacter : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        cardOnHand.SetLayer(18);
     }
 
     public void PlaySound(AudioClip audio)
@@ -117,5 +118,10 @@ public class MainCharacter : MonoBehaviour
     public void ApplyState()
     {
         GameManager.instance.SetGameplayPhase(nextState);
+    }
+
+    public void ChangeColorOnCard(Card.CardType type)
+    {
+        cardOnHand.SetColor(type);
     }
 }

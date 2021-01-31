@@ -349,7 +349,8 @@ public class GameManager : MonoBehaviour
 
     void PickWrongCard_Internal()
     {
-        Debug.Log("strings are same? " + (currentLocationName == ExtractWord(currentGameplayString)));
+
+        
         if(currentLocationName == ExtractWord(currentGameplayString))
         {
             SetGameState(GameState.Complete);
@@ -381,8 +382,11 @@ public class GameManager : MonoBehaviour
             
             Debug.LogWarning("Gameplay: " + "Removed " + guess + " - New string is _" + ExtractWord(currentGameplayString) + "_" );
 
+            Card.CardType cardType = currentGameplayString.Contains(guess.ToString()) ? Card.CardType.AlreasyPresent : Card.CardType.Remove;
+
             MainCharacter.instance.ReleaseSlot(analyzedPosition);
             MainCharacter.instance.SetupCardOnHand(guess);
+            MainCharacter.instance.ChangeColorOnCard(cardType);
             EventManager.instance.SetCharacterAnimation("takeCard");
 
             MainCharacter.instance.RegisterNewGameplayState(GameplayState.WaitingPlayerRelease);
@@ -403,13 +407,18 @@ public class GameManager : MonoBehaviour
 
         char substitute = currentLocationName[thisAnalyzedPosition];
 
+        Card.CardType cardType = currentGameplayString.Contains(substitute.ToString()) ? Card.CardType.AlreasyPresent : Card.CardType.Add;
+
         previousGameplayString = currentGameplayString;
         currentGameplayString = currentGameplayString.Remove(thisAnalyzedPosition, 1).Insert(thisAnalyzedPosition, substitute.ToString());
         
         Debug.LogWarning("Gameplay: " + "Added " + substitute + " - New string is _" + ExtractWord(currentGameplayString) + "_");
 
+        
+
         MainCharacter.instance.BookCardForSlot(thisAnalyzedPosition, substitute);
         MainCharacter.instance.SetupCardOnHand(substitute);
+        MainCharacter.instance.ChangeColorOnCard(cardType);
         EventManager.instance.SetCharacterAnimation("drawCard");
 
         MainCharacter.instance.RegisterNewGameplayState(GameplayState.WaitingPlayerPress);
