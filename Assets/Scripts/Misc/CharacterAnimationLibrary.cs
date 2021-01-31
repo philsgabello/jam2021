@@ -5,7 +5,7 @@ using UnityEngine;
 public class CharacterAnimationLibrary : MonoBehaviour
 {
 
-    
+    AudioClip currentSoundToRandomize;
 
     // Start is called before the first frame update
     void Start()
@@ -23,6 +23,20 @@ public class CharacterAnimationLibrary : MonoBehaviour
     {
         MainCharacter.instance.PlaySound(clip);
 
+    }
+
+    public void PlaySoundRandom(AudioClip clip)
+    {
+        if(currentSoundToRandomize != clip)
+        {
+            currentSoundToRandomize = clip;
+            MainCharacter.instance.PlaySound(clip);
+            return;
+        }
+        if(Random.Range(0f, 1f) <= .3f)
+        {
+            MainCharacter.instance.PlaySound(clip);
+        }
     }
 
     public void ApplyCardSlots()

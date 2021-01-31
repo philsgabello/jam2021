@@ -1,6 +1,6 @@
 castle
-factory
+thefactory
 inspace
 thebank
 hospital
-prison
+supermax

@@ -78,6 +78,15 @@ public class MainCharacter : MonoBehaviour
         
     }
 
+    public void ReleaseAllSlots()
+    {
+        for(int i = 0;i < 10; i++)
+        {
+            table.AppendSlotRemoval(i);
+        }
+        table.ReleaseSlots();
+    }
+
     public void ReleaseSlot(int i)
     {
         table.AppendSlotRemoval(i);

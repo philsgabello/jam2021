@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
 
     public enum GameState
     {
-        Idle, WaitFirstInput, Gameplay, GameOver, Complete
+        Idle, WaitForFirstInput, WaitForCorrection, Gameplay, GameOver, Complete
     }
 
     public enum GameplayState
@@ -29,6 +29,8 @@ public class GameManager : MonoBehaviour
 
     }
 
+    private int lives = 3;
+
     private GameState gameState = GameState.Idle;
 
     public Text debugText;
@@ -41,6 +43,7 @@ public class GameManager : MonoBehaviour
     string currentLocationName;
 
     string currentGameplayString;
+    string previousGameplayString;
 
     GameplayState gameplayPhase = GameplayState.Idle;
     bool shouldRemove = true;
@@ -71,11 +74,9 @@ public class GameManager : MonoBehaviour
             case GameState.Idle:
                 break;
 
-            case GameState.WaitFirstInput:
+            case GameState.WaitForFirstInput:
                 if (CheckContained(ExtractWord(currentGameplayString), InputManager.instance.CurrentInput))
                 {
-                    //The game starts
-                    //TODO: GFX
                     SetGameState(GameState.Gameplay);
                 }
                 break;
@@ -84,12 +85,26 @@ public class GameManager : MonoBehaviour
                 ProcessGameplay();
                 break;
 
+            case GameState.WaitForCorrection:
+                if (CheckContained(ExtractWord(currentGameplayString), InputManager.instance.CurrentInput))
+                {
+                    string triggerName = (shouldRemove) ? "drawCard" : "takeCard";
+                    EventManager.instance.SetCharacterAnimation(triggerName);
+                    SetGameState(GameState.Gameplay);
+                }
+                break;
+
             case GameState.Complete:
                 EventManager.instance.SetCharacterAnimation("win");
                 SetGameState(GameState.Idle);
                 break;
 
             case GameState.GameOver:
+                MainCharacter.instance.ReleaseAllSlots();
+                MainCharacter.instance.SetCardOnHandVisible(false);
+                Debug.LogWarning("GAME OVER");
+                EventManager.instance.SetCharacterAnimation("gameOver");
+                SetGameState(GameState.Idle);
                 break;
 
             default:
@@ -106,11 +121,13 @@ public class GameManager : MonoBehaviour
                 if (shouldRemove)
                 {
                     Debug.LogWarning("Gameplay: " + "Pass To Remove");
+                    //MainCharacter.instance.RegisterNewGameplayState(GameplayState.Remove);
                     gameplayPhase = GameplayState.Remove;
                 }
                 else
                 {
                     Debug.LogWarning("Gameplay: " + "Pass To Add");
+                    //MainCharacter.instance.RegisterNewGameplayState(GameplayState.Add);
                     gameplayPhase = GameplayState.Add;
                 }
                 break;
@@ -122,6 +139,23 @@ public class GameManager : MonoBehaviour
                 }
                 break;
             case GameplayState.WaitingPlayerRelease:
+                if (!CheckContained(ExtractWord(previousGameplayString), InputManager.instance.CurrentInput) && !CheckContained(ExtractWord(currentGameplayString), InputManager.instance.CurrentInput))
+                {
+                    if(lives != 0)
+                    {
+                        lives--;
+                        Debug.LogWarning("Remaining Lives: " + lives);
+                        SetGameState(GameState.WaitForCorrection);
+                        EventManager.instance.SetCharacterAnimation("error");
+                    }
+                    else
+                    {
+                        
+                        SetGameState(GameState.GameOver);
+                    }
+                    
+                    
+                }
                 if (CheckContained(ExtractWord(currentGameplayString), InputManager.instance.CurrentInput))
                 {
                     
@@ -138,6 +172,20 @@ public class GameManager : MonoBehaviour
                 }
                 break;
             case GameplayState.WaitingPlayerPress:
+                if (!CheckContained(ExtractWord(previousGameplayString), InputManager.instance.CurrentInput) && !CheckContained(ExtractWord(currentGameplayString), InputManager.instance.CurrentInput))
+                {
+                    if (lives != 0)
+                    {
+                        lives--;
+                        Debug.LogWarning("Remaining Lives: " + lives);
+                        SetGameState(GameState.WaitForCorrection);
+                        EventManager.instance.SetCharacterAnimation("error");
+                    }
+                    else
+                    {
+                        SetGameState(GameState.GameOver);
+                    }
+                }
                 if (CheckContained(ExtractWord(currentGameplayString), InputManager.instance.CurrentInput))
                 {
                     EventManager.instance.SetCharacterAnimation("setCard");
@@ -149,7 +197,7 @@ public class GameManager : MonoBehaviour
 
     public void BeginNewGameInstance()
     {
-
+        lives = 3;
         currentCatName = SelectNewName().ToUpper();
         string tempLocation;
         do
@@ -172,7 +220,7 @@ public class GameManager : MonoBehaviour
 
         MainCharacter.instance.NewWordBooking(ExtractWord(currentGameplayString));
 
-        SetGameState(GameState.WaitFirstInput);
+        SetGameState(GameState.WaitForFirstInput);
 
     }
 
@@ -185,7 +233,7 @@ public class GameManager : MonoBehaviour
     {
         List<string> temp = fileHandler.GetListOfNames();
 
-        string candidate = temp[UnityEngine.Random.Range(0, temp.Count - 1)];
+        string candidate = temp[UnityEngine.Random.Range(0, temp.Count)];
 
         return candidate;
     }
@@ -194,7 +242,7 @@ public class GameManager : MonoBehaviour
     {
         List<string> temp = fileHandler.GetListOfLocations();
 
-        string candidate = temp[UnityEngine.Random.Range(0, temp.Count - 1)];
+        string candidate = temp[UnityEngine.Random.Range(0, temp.Count)];
 
         return candidate;
     }
@@ -303,11 +351,12 @@ public class GameManager : MonoBehaviour
         if (guess == ' ')
         {
             Debug.LogWarning("Gameplay: " + "No Previous Letter. Passing to ADD");
-            gameplayPhase = GameplayState.Add;
+            //MainCharacter.instance.RegisterNewGameplayState(GameplayState.Idle);
+            gameplayPhase = GameplayState.Idle;
         }
         else
         {
-            
+            previousGameplayString = currentGameplayString;
             currentGameplayString = currentGameplayString.Remove(analyzedPosition, 1).Insert(analyzedPosition, " ");
             
             Debug.LogWarning("Gameplay: " + "Removed " + guess + " - New string is _" + ExtractWord(currentGameplayString) + "_" );
@@ -315,7 +364,9 @@ public class GameManager : MonoBehaviour
             MainCharacter.instance.ReleaseSlot(analyzedPosition);
             MainCharacter.instance.SetupCardOnHand(guess);
             EventManager.instance.SetCharacterAnimation("takeCard");
-            gameplayPhase = GameplayState.WaitingPlayerRelease;
+
+            MainCharacter.instance.RegisterNewGameplayState(GameplayState.WaitingPlayerRelease);
+            //gameplayPhase = GameplayState.WaitingPlayerRelease;
         }
         
         
@@ -332,6 +383,7 @@ public class GameManager : MonoBehaviour
 
         char substitute = currentLocationName[thisAnalyzedPosition];
 
+        previousGameplayString = currentGameplayString;
         currentGameplayString = currentGameplayString.Remove(thisAnalyzedPosition, 1).Insert(thisAnalyzedPosition, substitute.ToString());
         
         Debug.LogWarning("Gameplay: " + "Added " + substitute + " - New string is _" + ExtractWord(currentGameplayString) + "_");
@@ -339,7 +391,9 @@ public class GameManager : MonoBehaviour
         MainCharacter.instance.BookCardForSlot(thisAnalyzedPosition, substitute);
         MainCharacter.instance.SetupCardOnHand(substitute);
         EventManager.instance.SetCharacterAnimation("drawCard");
-        gameplayPhase = GameplayState.WaitingPlayerPress;
+
+        MainCharacter.instance.RegisterNewGameplayState(GameplayState.WaitingPlayerPress);
+        //gameplayPhase = GameplayState.WaitingPlayerPress;
 
     }
 
