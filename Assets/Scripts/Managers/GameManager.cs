@@ -58,7 +58,7 @@ public class GameManager : MonoBehaviour
 
         fileHandler = new FileHandler();
 
-        StartCoroutine(StartGamestate(1f));
+        StartCoroutine(StartGamestate(3f));
     }
 
     // Update is called once per frame
