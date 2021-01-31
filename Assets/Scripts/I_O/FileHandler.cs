@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-public class FileHandler
+using UnityEngine;
+public class FileHandler : MonoBehaviour
 {
     List<string> names = new List<string>();
     List<string> locations = new List<string>();
@@ -19,17 +19,26 @@ public class FileHandler
             return names;
         }
 
-        StreamReader reader = new StreamReader(namesFilePath);
-        string fullText = reader.ReadToEnd();
+        TextAsset txt = (TextAsset)Resources.Load("names", typeof(TextAsset));
+        
+        string fullText = txt.text;
+        Debug.Log(fullText);
 
-        List<string> tempList = new List<string>();
-        tempList.AddRange(fullText.Split('\n'));
+        List<string> tempList = new List<string>(fullText.Split('\n'));
+
+        
 
 
         for(int i = 0; i < tempList.Count; i++)
         {
+            if (tempList[i].Length == 0)
+            {
+                Debug.LogError(i + " indice con stringa vuota");
+            }
             tempList[i] = tempList[i].Remove(tempList[i].Length - 1);
         }
+
+        Debug.Log(tempList[0]);
 
         names = tempList;
 
@@ -43,19 +52,25 @@ public class FileHandler
             return locations;
         }
 
-        StreamReader reader = new StreamReader(locationsFilePath);
-        string fullText = reader.ReadToEnd();
+        TextAsset txt = (TextAsset)Resources.Load("locations", typeof(TextAsset));
 
-        List<string> tempList = new List<string>();
-        tempList.AddRange(fullText.Split(new char[] { '\n' }, System.StringSplitOptions.RemoveEmptyEntries));
+        string fullText = txt.text;
+
+        List<string> tempList = new List<string>(fullText.Split('\n'));
 
         for (int i = 0; i < tempList.Count; i++)
         {
+            if(tempList[i].Length == 0)
+            {
+                Debug.LogError(i + " indice con stringa vuota");
+            }
             tempList[i] = tempList[i].Remove(tempList[i].Length - 1);
         }
 
 
         locations = tempList;
+
+
 
         return locations;
     }

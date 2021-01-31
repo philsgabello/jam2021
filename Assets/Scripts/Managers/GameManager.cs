@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviour
 
     public static GameManager instance;
 
-    FileHandler fileHandler;
+    public FileHandler fileHandler;
 
     string currentCatName;
     string currentLocationName;
@@ -58,6 +58,8 @@ public class GameManager : MonoBehaviour
 
     public EndBackground endBkg;
 
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -67,7 +69,7 @@ public class GameManager : MonoBehaviour
             instance = this;
         }
 
-        fileHandler = new FileHandler();
+        
 
         StartCoroutine(StartGamestate(3f));
     }
@@ -264,7 +266,9 @@ public class GameManager : MonoBehaviour
 
     private string SelectNewLocation(Difficulty difficulty = Difficulty.Easy)
     {
+
         List<string> temp = fileHandler.GetListOfLocations();
+        
 
         string candidate = temp[UnityEngine.Random.Range(0, temp.Count)];
 
