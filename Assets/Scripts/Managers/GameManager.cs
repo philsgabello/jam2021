@@ -98,9 +98,14 @@ public class GameManager : MonoBehaviour
             case GameState.WaitForCorrection:
                 if (CheckContained(ExtractWord(currentGameplayString), InputManager.instance.CurrentInput))
                 {
+                    MainCharacter.instance.ResetColorOnCardOnTable();
                     string triggerName = (shouldRemove) ? "drawCard" : "takeCard";
                     EventManager.instance.SetCharacterAnimation(triggerName);
                     SetGameState(GameState.Gameplay);
+                }
+                else
+                {
+                    MainCharacter.instance.SetColorOnCardOnTable();
                 }
                 break;
 
@@ -110,6 +115,7 @@ public class GameManager : MonoBehaviour
                 MainCharacter.instance.SetCardOnHandVisible(false);
                 EventManager.instance.SetCharacterAnimation("win");
                 SetGameState(GameState.Idle);
+                SetGameplayPhase(GameplayState.Idle);
                 StartCoroutine(WinState(4f));
                 StartCoroutine(StartNewGameFromWin(10f));
                 break;
@@ -121,6 +127,7 @@ public class GameManager : MonoBehaviour
                 Debug.LogWarning("GAME OVER");
                 EventManager.instance.SetCharacterAnimation("gameOver");
                 SetGameState(GameState.Idle);
+                SetGameplayPhase(GameplayState.Idle);
                 StartCoroutine(StartNewGameFromGameOver(4f));
                 break;
 
@@ -139,13 +146,13 @@ public class GameManager : MonoBehaviour
                 {
                     Debug.LogWarning("Gameplay: " + "Pass To Remove");
                     //MainCharacter.instance.RegisterNewGameplayState(GameplayState.Remove);
-                    gameplayPhase = GameplayState.Remove;
+                    SetGameplayPhase(GameplayState.Remove);
                 }
                 else
                 {
                     Debug.LogWarning("Gameplay: " + "Pass To Add");
                     //MainCharacter.instance.RegisterNewGameplayState(GameplayState.Add);
-                    gameplayPhase = GameplayState.Add;
+                    SetGameplayPhase(GameplayState.Add);
                 }
                 break;
             case GameplayState.Remove:
@@ -172,10 +179,8 @@ public class GameManager : MonoBehaviour
                 }
                 if (CheckContained(ExtractWord(currentGameplayString), InputManager.instance.CurrentInput))
                 {
-                    
-
                     EventManager.instance.SetCharacterAnimation("shuffleCard");
-                    gameplayPhase = GameplayState.Idle;
+                    SetGameplayPhase(GameplayState.Idle);
                 }
                 break;
             case GameplayState.Add:
@@ -199,8 +204,9 @@ public class GameManager : MonoBehaviour
                 }
                 if (CheckContained(ExtractWord(currentGameplayString), InputManager.instance.CurrentInput))
                 {
+                    
                     EventManager.instance.SetCharacterAnimation("setCard");
-                    gameplayPhase = GameplayState.Idle;
+                    SetGameplayPhase(GameplayState.Idle);
                 }
                 break;
         } 
@@ -218,6 +224,8 @@ public class GameManager : MonoBehaviour
     public void BeginNewGameInstance()
     {
         shouldRemove = true;
+        SetGameplayPhase(GameplayState.Idle);
+
         Invoke("GenerateCat", 3f);
         lives = 3;
         LifeBar.instance.Reset();
@@ -252,6 +260,7 @@ public class GameManager : MonoBehaviour
 
     private void SetGameState(GameState newGameState)
     {
+        
         gameState = newGameState;
     }
 
@@ -381,7 +390,7 @@ public class GameManager : MonoBehaviour
         {
             Debug.LogWarning("Gameplay: " + "No Previous Letter. Passing to ADD");
             //MainCharacter.instance.RegisterNewGameplayState(GameplayState.Idle);
-            gameplayPhase = GameplayState.Idle;
+            SetGameplayPhase(GameplayState.Idle);
         }
         else
         {
@@ -453,6 +462,7 @@ public class GameManager : MonoBehaviour
     void WinState_Internal()
     {
         masterAnim.SetTrigger("exit");
+        
     }
 
 
@@ -467,10 +477,21 @@ public class GameManager : MonoBehaviour
 
     IEnumerator StartNewGameFromWin(float delay)
     {
-        yield return new WaitForSeconds(delay);
+        float intermediate = 7f;
 
+        yield return new WaitForSeconds(intermediate);
+        LifeBar.instance.RemoveLife();
+        LifeBar.instance.RemoveLife();
+        LifeBar.instance.RemoveLife();
         EventManager.instance.SetCharacterAnimation("reset");
+        overlay.isActive = false;
+
+        yield return new WaitForSeconds(delay - intermediate);
+
+        
         masterAnim.SetTrigger("reset");
+
+        yield return new WaitForSeconds(3f);
 
         BeginNewGameInstance();
     }

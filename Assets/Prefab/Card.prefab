@@ -136,6 +136,7 @@ MonoBehaviour:
   addColor: {r: 0.14901961, g: 0.80784315, b: 0.29411766, a: 1}
   removeColor: {r: 0.80784315, g: 0.14901961, b: 0.24705882, a: 1}
   alreadyColor: {r: 0.27429688, g: 0.6354344, b: 0.8679245, a: 1}
+  inactiveColor: {r: 0.6792453, g: 0.6792453, b: 0.6792453, a: 1}
 --- !u!1 &6406298635621135282
 GameObject:
   m_ObjectHideFlags: 0

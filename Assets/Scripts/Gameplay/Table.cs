@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -93,6 +94,37 @@ public class Table : MonoBehaviour
         }
     }
 
+    public void SetColorOnCard()
+    {
+        for (int i = 0; i < slotsDictionary.Count; i++)
+        {
+            Card c = slotsDictionary[GetSocket(i)];
 
+            if (c != null)
+            {
+                if (InputManager.instance.CurrentInput.Contains(c.GetLetter().ToString()))
+                {
+                    c.SetColor(Card.CardType.Base);
 
+                }
+                else
+                {
+                    c.SetColor(Card.CardType.Inactive);
+                }
+            }
+        }
+    }
+
+    internal void ResetColorOnCard()
+    {
+        for (int i = 0; i < slotsDictionary.Count; i++)
+        {
+            Card c = slotsDictionary[GetSocket(i)];
+
+            if (c != null)
+            {
+                c.SetColor(Card.CardType.Base);
+            }
+        }
+    }
 }

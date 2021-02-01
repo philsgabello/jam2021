@@ -21,6 +21,7 @@ public class Card : MonoBehaviour
     public Color addColor = new Color(38f/255f, 206f / 255f, 75f / 255f);
     public Color removeColor = new Color(206f / 255f, 38f / 255f, 63f / 255f);
     public Color alreadyColor = new Color(104f / 255f, 199f / 255f, 191f / 255f);
+    public Color inactiveColor = new Color(173f / 255f, 173f / 255f, 173f / 255f);
 
     Color currentColor;
 
@@ -28,7 +29,7 @@ public class Card : MonoBehaviour
 
     public enum CardType
     {
-        Base, Add, Remove, AlreasyPresent
+        Base, Add, Remove, AlreasyPresent, Inactive
     }
 
     Dictionary<CardType, Color> colorDictionary = new Dictionary<CardType, Color>();
@@ -49,6 +50,7 @@ public class Card : MonoBehaviour
         colorDictionary.Add(CardType.Add, addColor);
         colorDictionary.Add(CardType.Remove, removeColor);
         colorDictionary.Add(CardType.AlreasyPresent, alreadyColor);
+        colorDictionary.Add(CardType.Inactive, inactiveColor);
 
         currentColor = baseColor;
     }
@@ -114,5 +116,10 @@ public class Card : MonoBehaviour
         letterSR.sortingOrder = layer;
         textMesh.GetComponent<MeshRenderer>().sortingOrder = layer + 2;
         borderRenderer.sortingOrder = layer + 1;
+    }
+
+    public char GetLetter()
+    {
+        return letter;
     }
 }

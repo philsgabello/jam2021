@@ -25,8 +25,12 @@ public class LifeBar : MonoBehaviour
 
     public void RemoveLife()
     {
-        anims[count].SetTrigger("fall");
-        count++;
+        if (count < anims.Length)
+        {
+            anims[count].SetTrigger("fall");
+            count++;
+        }
+        
     }
 
     public void Reset()

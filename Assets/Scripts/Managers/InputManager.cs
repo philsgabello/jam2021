@@ -33,6 +33,8 @@ public class InputManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
+
         foreach(KeyCode key in keyCodes)
         {
             if (Input.GetKeyDown(key))
@@ -45,7 +47,10 @@ public class InputManager : MonoBehaviour
             }
         }
 
-        
+        Debug.Log(currentString);
+
+
+
     }
 
 

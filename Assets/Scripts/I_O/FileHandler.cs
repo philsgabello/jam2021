@@ -26,19 +26,15 @@ public class FileHandler : MonoBehaviour
 
         List<string> tempList = new List<string>(fullText.Split('\n'));
 
-        
 
+        tempList.RemoveAt(tempList.Count - 1);
 
-        for(int i = 0; i < tempList.Count; i++)
+        for (int i = 0; i < tempList.Count; i++)
         {
-            if (tempList[i].Length == 0)
-            {
-                Debug.LogError(i + " indice con stringa vuota");
-            }
             tempList[i] = tempList[i].Remove(tempList[i].Length - 1);
         }
 
-        Debug.Log(tempList[0]);
+        Debug.Log(tempList[tempList.Count -1]);
 
         names = tempList;
 
@@ -58,14 +54,15 @@ public class FileHandler : MonoBehaviour
 
         List<string> tempList = new List<string>(fullText.Split('\n'));
 
+        tempList.RemoveAt(tempList.Count - 1);
+
         for (int i = 0; i < tempList.Count; i++)
         {
-            if(tempList[i].Length == 0)
-            {
-                Debug.LogError(i + " indice con stringa vuota");
-            }
+
             tempList[i] = tempList[i].Remove(tempList[i].Length - 1);
         }
+
+        Debug.Log(tempList[tempList.Count - 1]);
 
 
         locations = tempList;

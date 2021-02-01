@@ -20,11 +20,9 @@ public class PoolingManager : MonoBehaviour
 
     public static PoolingManager instance;
 
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-
-        if(instance == null)
+        if (instance == null)
         {
             instance = this;
         }
@@ -41,6 +39,13 @@ public class PoolingManager : MonoBehaviour
             cardsPool.Add(newObject.GetComponentInChildren<Card>());
             cardsPool[i].ClearSlot();
         }
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+
+
     }
 
     // Update is called once per frame

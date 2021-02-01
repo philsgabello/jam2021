@@ -6,7 +6,6 @@ public class MainCharacter : MonoBehaviour
 {
     public static MainCharacter instance;
 
-    AudioSource audioSource;
     Table table;
 
     public Animator animator;
@@ -16,6 +15,8 @@ public class MainCharacter : MonoBehaviour
     public Transform handSocket;
 
     GameManager.GameplayState nextState;
+
+    bool isRegistered = false;
 
     // Start is called before the first frame update
     void Start()
@@ -33,7 +34,6 @@ public class MainCharacter : MonoBehaviour
             instance = this;
         }
 
-        audioSource = this.GetComponent<AudioSource>();
         EventManager.CharacterAnimationTrigger += SetAnimatorTrigger;
 
     }
@@ -44,13 +44,7 @@ public class MainCharacter : MonoBehaviour
         cardOnHand.SetLayer(18);
     }
 
-    public void PlaySound(AudioClip audio)
-    {
-        audioSource.Stop();
-        audioSource.clip = audio;
-        audioSource.Play();
 
-    }
 
     public void SetAnimatorTrigger(string triggerName)
     {
@@ -113,11 +107,29 @@ public class MainCharacter : MonoBehaviour
 
     public void RegisterNewGameplayState(GameManager.GameplayState state)
     {
+        
         nextState = state;
+        isRegistered = true;
     }
     public void ApplyState()
     {
-        GameManager.instance.SetGameplayPhase(nextState);
+        if (isRegistered)
+        {
+            GameManager.instance.SetGameplayPhase(nextState);
+            isRegistered = false;
+        }
+        
+    }
+
+    public void SetColorOnCardOnTable()
+    {
+        
+        table.SetColorOnCard();
+    }
+    public void ResetColorOnCardOnTable()
+    {
+
+        table.ResetColorOnCard();
     }
 
     public void ChangeColorOnCard(Card.CardType type)
